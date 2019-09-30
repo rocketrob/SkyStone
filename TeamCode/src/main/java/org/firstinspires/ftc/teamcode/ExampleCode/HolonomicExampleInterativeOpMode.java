@@ -47,13 +47,13 @@ public class HolonomicExampleInterativeOpMode extends OpMode {
        * that the names of the devices must match the names used when you
        * configured your robot and created the configuration file.
        */
-        robot.init(hardwareMap);  //Initialize hardware from the HardwareHolonomic Setup
+        robot.init(hardwareMap);  //Initialize hardware from the HardwareHolonomic Class
     }
 
     @Override
     public void loop() {
 
-
+        //THE GAMEPAD CONFIGURATION CAN BE CHANGED TO MATCH YOUR DESIRED SETUP
         // left stick X controls Strafe & Y controls Spin Direction
         // right stick Y controls drive Forward/Backward
 
@@ -62,7 +62,6 @@ public class HolonomicExampleInterativeOpMode extends OpMode {
         float gamepad1RightY = gamepad1.right_stick_y;  //drives forwards and backwards
 
         // holonomic formulas
-
         float FrontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightY;
         float FrontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightY;
         float BackRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightY;
