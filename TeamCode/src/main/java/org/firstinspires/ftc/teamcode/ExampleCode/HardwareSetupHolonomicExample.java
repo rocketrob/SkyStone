@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 /**
- * Created by TeameurekaRobotics on 12/30/2016
+ * Created by TeameurekaRobotics on 12/30/2016, updated 10/1/2019
  *
  * This file contains an example Hardware Setup Class for a 4 motor Holonomic drive.
  *

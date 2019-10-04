@@ -31,6 +31,7 @@ public class ConceptHolonomicAutoDriveByTime extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     /* Define Hardware setup */
+    // assumes left motors are reversed
     HardwareSetupHolonomicExample robot     =   new HardwareSetupHolonomicExample();
     /**
      * Constructor

@@ -26,11 +26,14 @@ import com.qualcomm.robotcore.util.Range;
         X           X
           X       X
 */
+    //DON'T FORGET TO RENAME TeleOp NAME HERE IN GREEN
+    //AND COMMENT OUT "Disabled" WHEN READY TO HAVE IT SHOW UP ON PHONE
 @TeleOp(name = "Example: HolonomicTeleOp Iterative", group = "Examples")
 @Disabled
 public class HolonomicExampleInterativeOpMode extends OpMode {
 
     //  DON'T FORGET TO RENAME HARDWARE CONFIG FILE NAME HERE!!!!!!
+    //  ALSO, THE HOLONOMIC CALCULATIONS BELOW ASSUME THE LEFT MOTORS HAVE BEEN REVERSED
     HardwareSetupHolonomicExample robot     =   new HardwareSetupHolonomicExample();
 
     /**
@@ -53,19 +56,20 @@ public class HolonomicExampleInterativeOpMode extends OpMode {
     @Override
     public void loop() {
 
-        //THE GAMEPAD CONFIGURATION CAN BE CHANGED TO MATCH YOUR DESIRED SETUP
-        // left stick X controls Strafe & Y controls Spin Direction
-        // right stick Y controls drive Forward/Backward
+        //THE GAMEPAD CONFIGURATION - which controls control what!
+        // "Y" left stick Y controls drive Forward/Backward
+        // "X" left stick X controls Strafe Direction
+        // "Z" right stick X controls Spin Direction
 
-        float gamepad1LeftY = -gamepad1.left_stick_y;   // drives spin left/right
-        float gamepad1LeftX = gamepad1.left_stick_x;    // strafe direction (side to side)
-        float gamepad1RightY = gamepad1.right_stick_y;  //drives forwards and backwards
+        float Y = -gamepad1.left_stick_y;   //drives forwards and backwards (this is set negative as input values from gamepad are reversed i.e. pressing forward give neg value)
+        float X = gamepad1.left_stick_x;    // strafe direction (side to side)
+        float Z = gamepad1.right_stick_x;  // drives spin left/right
 
-        // holonomic formulas
-        float FrontLeft = -gamepad1LeftY - gamepad1LeftX - gamepad1RightY;
-        float FrontRight = gamepad1LeftY - gamepad1LeftX - gamepad1RightY;
-        float BackRight = gamepad1LeftY + gamepad1LeftX - gamepad1RightY;
-        float BackLeft = -gamepad1LeftY + gamepad1LeftX - gamepad1RightY;
+        // holonomic formulas - combines gamepad values to control direction of motor rotation. NOTE this is with Left motors REVERSED. See http://ftckey.com/programming/advanced-programming/
+        float FrontLeft     = Y +  X - Z;
+        float FrontRight    = Y - X + Z;
+        float BackRight     = Y - X - Z;
+        float BackLeft      = Y + X + Z;
 
         // clip the right/left values so that the values never exceed +/- 1
         FrontRight = Range.clip(FrontRight, -1, 1);
@@ -73,7 +77,7 @@ public class HolonomicExampleInterativeOpMode extends OpMode {
         BackLeft = Range.clip(BackLeft, -1, 1);
         BackRight = Range.clip(BackRight, -1, 1);
 
-        // write the values to the motors
+        // /finally, write the calculated values to the motors
         robot.motorFrontRight.setPower(FrontRight);
         robot.motorFrontLeft.setPower(FrontLeft);
         robot.motorBackLeft.setPower(BackLeft);
@@ -83,7 +87,7 @@ public class HolonomicExampleInterativeOpMode extends OpMode {
        * Telemetry for debugging
        */
         telemetry.addData("Text", "*** Robot Data***");
-        telemetry.addData("Joy XL YL XR",  String.format("%.2f", gamepad1LeftX) + " " + String.format("%.2f", gamepad1LeftY) + " " +  String.format("%.2f", gamepad1RightY));
+        telemetry.addData("Joy XL YL XR",  String.format("%.2f", X) + " " + String.format("%.2f", X) + " " +  String.format("%.2f", Z));
         telemetry.addData("f left pwr",  "front left  pwr: " + String.format("%.2f", FrontLeft));
         telemetry.addData("f right pwr", "front right pwr: " + String.format("%.2f", FrontRight));
         telemetry.addData("b right pwr", "back right pwr: " + String.format("%.2f", BackRight));
