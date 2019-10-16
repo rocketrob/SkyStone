@@ -58,12 +58,13 @@ public class HolonomicExampleInterativeOpMode extends OpMode {
 
         //THE GAMEPAD CONFIGURATION - which controls control what!
         // "Y" left stick Y controls drive Forward/Backward
-        // "X" left stick X controls Strafe Direction
-        // "Z" right stick X controls Spin Direction
+        // "Z" left stick X controls Strafe Direction
+        // "X" right stick X controls Spin Direction
 
-        float Y = -gamepad1.left_stick_y;   //drives forwards and backwards (this is set negative as input values from gamepad are reversed i.e. pressing forward give neg value)
-        float X = gamepad1.left_stick_x;    // strafe direction (side to side)
-        float Z = gamepad1.right_stick_x;  // drives spin left/right
+        float Y = -gamepad1.left_stick_y;   //drives forwards and backwards (both Y & X gamepad values are set negative as input values from gamepad are reversed i.e. pressing forward give neg value)
+        float Z = -gamepad1.left_stick_x;   // strafe direction (side to side)
+
+        float X = gamepad1.right_stick_x;   // drives spin left/right
 
         // holonomic formulas - combines gamepad values to control direction of motor rotation. NOTE this is with Left motors REVERSED. See http://ftckey.com/programming/advanced-programming/
         float FrontLeft     = Y +  X - Z;
