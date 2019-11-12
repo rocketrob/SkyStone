@@ -39,9 +39,7 @@ public class HolonomicExampleInterativeOpMode extends OpMode {
     /**
      * Constructor
      */
-    public HolonomicExampleInterativeOpMode() {
-
-    }
+    public HolonomicExampleInterativeOpMode() { }
 
     @Override
     public void init() {

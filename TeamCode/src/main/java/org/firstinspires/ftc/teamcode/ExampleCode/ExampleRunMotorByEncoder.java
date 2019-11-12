@@ -35,6 +35,7 @@ package org.firstinspires.ftc.teamcode.ExampleCode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -57,7 +58,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Example RunMotor By Encoder", group="Examples")
 @Disabled
-public class ExampleRunMotorByEncoder_Linear extends LinearOpMode {
+public class ExampleRunMotorByEncoder extends OpMode {
 
     //reset runtime counter
     private ElapsedTime runtime = new ElapsedTime();
@@ -65,6 +66,8 @@ public class ExampleRunMotorByEncoder_Linear extends LinearOpMode {
     //  DON'T FORGET TO RENAME HARDWARE CONFIG FILE NAME HERE!!!!!!
     MyBotHardwareSetup robot = new MyBotHardwareSetup(); //set up remote to robot hardware configuration
 
+    //constructor
+    public ExampleRunMotorByEncoder() {}
 
     //variables for determining distance travels per encoder 'clicks'
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder is 1440, AndyMark NevaRest encoders is 1120
@@ -76,16 +79,15 @@ public class ExampleRunMotorByEncoder_Linear extends LinearOpMode {
     int     armHoldPosition;             // reading of arm position when buttons released to hold
     double  slopeVal         = 2000.0;   // increase or decrease to perfect holding power
 
-
-
     @Override
-    public void runOpMode() {
-         /*
-         * Use the hardwareMap to get the dc motors and servos by name. Note
-         * that the names of the devices must match the names used when you
-         * configured your robot and configuration file.
-         */
-        robot.init(hardwareMap);  //Initialize hardware from the Hardware Setup Class
+    public  void init() {
+        robot.init(hardwareMap);
+    }
+
+//***********************************
+// Main program contained within loop
+//***********************************
+    public void loop() {
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
@@ -93,10 +95,6 @@ public class ExampleRunMotorByEncoder_Linear extends LinearOpMode {
 
         //Reset Encoders
         robot.motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        idle();   //allow for reset
-
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
 
        /* ///////////////
        // Establish encoder target and run motor to them
@@ -110,13 +108,12 @@ public class ExampleRunMotorByEncoder_Linear extends LinearOpMode {
             robot.motorArm.setTargetPosition(target); // set desired target (determined above)
             robot.motorArm.setPower(1.0); // set motor power
             robot.motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION); // run motor to that position
-
-            // wait for arm to reach target before moving on to next line of code. display arm position while waiting
-            while (robot.motorArm.isBusy()) {
-                // Send telemetry message to indicate successful Encoder reset to zero
-                telemetry.addData("moving to target", "at %7d :%7d", robot.motorArm.getCurrentPosition());
-                telemetry.update();
-            }
+        }
+        // display arm position while waiting
+        if (robot.motorArm.isBusy()) {
+            // Send telemetry message to indicate successful Encoder reset to zero
+            telemetry.addData("moving to target", "at %7d :%7d", robot.motorArm.getCurrentPosition());
+            telemetry.update();
         }
 
         // move arm down
@@ -125,19 +122,22 @@ public class ExampleRunMotorByEncoder_Linear extends LinearOpMode {
             robot.motorArm.setTargetPosition(target); // set desired target (determined above)
             robot.motorArm.setPower(-0.5); // set motor power
             robot.motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION); // run motor to that position
+        }
 
-            // wait for motor to reach target before moving on to next line of code. display arm position while waiting
-            while (robot.motorArm.isBusy()) {
-                // Send telemetry message to indicate successful Encoder reset to zero
-                telemetry.addData("moving to target", "at %7d :%7d", robot.motorArm.getCurrentPosition());
-                telemetry.update();
-            }
-        }else {
-            // Stop and reset motor
-            //robot.motorArm.setPower(0.0);
-            // or
+        // display arm position while waiting
+        if (robot.motorArm.isBusy()) {
+            // Send telemetry message to indicate successful Encoder reset to zero
+            telemetry.addData("moving to target", "at %7d :%7d", robot.motorArm.getCurrentPosition());
+            telemetry.update();
+        }
+        else {
             // set to hold that position
             robot.motorArm.setPower((double) (armHoldPosition - robot.motorArm.getCurrentPosition()) / slopeVal);
         }
+    }//loop
+    @Override
+    public void stop()
+    {
+        //stop all program
     }
-}
+}//MainClass
