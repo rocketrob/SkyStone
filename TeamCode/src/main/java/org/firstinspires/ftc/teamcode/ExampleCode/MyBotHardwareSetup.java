@@ -93,9 +93,9 @@ public class MyBotHardwareSetup  {
 
         // Set motors to run USING or WITHOUT encoders
         // Depending upon your configuration and use
-        motorArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         /************************************************************
          * SERVO SECTION

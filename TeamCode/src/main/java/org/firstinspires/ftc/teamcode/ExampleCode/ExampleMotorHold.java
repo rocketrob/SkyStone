@@ -28,7 +28,7 @@ public class ExampleMotorHold extends LinearOpMode{
     double  armMinPos        = 0.0;      // encoder position for arm at bottom
     double  armMaxPos        = 5380.0;   // encoder position for arm at top
     int     armHoldPosition;             // reading of arm position when buttons released to hold
-    double  slopeVal         = 2000.0;   // increase or decrease to perfect
+    double  slopeVal         = 2000.0;   // increase or decrease to perfect holding power
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
