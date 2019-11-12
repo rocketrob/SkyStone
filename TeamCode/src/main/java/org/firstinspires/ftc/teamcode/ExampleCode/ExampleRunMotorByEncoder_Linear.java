@@ -106,7 +106,7 @@ public class ExampleRunMotorByEncoder_Linear extends LinearOpMode {
 
         //move are up
         if(gamepad2.a) {
-            int target = robot.motorArm.getTargetPosition() + positionUp;
+            int target = robot.motorArm.getCurrentPosition() + positionUp;
             robot.motorArm.setTargetPosition(target); // set desired target (determined above)
             robot.motorArm.setPower(1.0); // set motor power
             robot.motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION); // run motor to that position
@@ -121,9 +121,9 @@ public class ExampleRunMotorByEncoder_Linear extends LinearOpMode {
 
         // move arm down
         else if(gamepad2.b) {
-            int target = robot.motorArm.getTargetPosition() + positionUp;
+            int target = robot.motorArm.getCurrentPosition() + positionDown; //add a neg should be negative
             robot.motorArm.setTargetPosition(target); // set desired target (determined above)
-            robot.motorArm.setPower(1.0); // set motor power
+            robot.motorArm.setPower(-0.5); // set motor power
             robot.motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION); // run motor to that position
 
             // wait for motor to reach target before moving on to next line of code. display arm position while waiting
