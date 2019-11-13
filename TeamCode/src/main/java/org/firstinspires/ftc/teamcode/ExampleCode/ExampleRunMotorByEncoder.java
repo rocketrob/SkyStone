@@ -1,41 +1,10 @@
-/*
-Copyright (c) 2016 Robert Atkinson
-
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted (subject to the limitations in the disclaimer below) provided that
-the following conditions are met:
-
-Redistributions of source code must retain the above copyright notice, this list
-of conditions and the following disclaimer.
-
-Redistributions in binary form must reproduce the above copyright notice, this
-list of conditions and the following disclaimer in the documentation and/or
-other materials provided with the distribution.
-
-Neither the name of Robert Atkinson nor the names of his contributors may be used to
-endorse or promote products derived from this software without specific prior
-written permission.
-
-NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
-LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESSFOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 package org.firstinspires.ftc.teamcode.ExampleCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -69,59 +38,57 @@ public class ExampleRunMotorByEncoder extends OpMode {
     //constructor
     public ExampleRunMotorByEncoder() {}
 
-    //variables for determining distance travels per encoder 'clicks'
+    //variables for determining distance travels per encoder 'clicks' for given wheel diameter
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder is 1440, AndyMark NevaRest encoders is 1120
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP >1.0 if geared DOWN. If no gearing set to 1.0
-    // not used here: static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-    // Not used here: static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
 
     //Additional variables
     int     armHoldPosition;             // reading of arm position when buttons released to hold
     double  slopeVal         = 2000.0;   // increase or decrease to perfect holding power
 
+    // set positions to drive motor to. Used as target values below
+    int positionUp = 750;
+    int positionDown = 0;
+
     @Override
     public  void init() {
         robot.init(hardwareMap);
-    }
+        //Reset Encoders
+        robot.motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //and hold motorArm in its current position
+        armHoldPosition = robot.motorArm.getCurrentPosition();
+        robot.motorArm.setPower((double) (armHoldPosition - robot.motorArm.getCurrentPosition()) / slopeVal);
 
+        telemetry.addData("Status", "Encoders reset");
+        telemetry.update();
+    }
 //***********************************
 // Main program contained within loop
 //***********************************
     public void loop() {
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Resetting Encoders");    //
+        telemetry.addData("current position", robot.motorArm.getCurrentPosition());    //
         telemetry.update();
 
-        //Reset Encoders
-        robot.motorArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-       /* ///////////////
-       // Establish encoder target and run motor to them
-       */ //////////////
-        int positionUp = (int)COUNTS_PER_MOTOR_REV/2;//divide full rotation 'click' count by desired (half a rotation in this case). And cast from double to int
-        int positionDown = robot.motorArm.getCurrentPosition() - positionUp; // return to initial position
-
-        //move are up
-        if(gamepad2.a) {
-            int target = robot.motorArm.getCurrentPosition() + positionUp;
+        //move are UP
+        if(gamepad2.y) {
+            int target =  positionUp;
             robot.motorArm.setTargetPosition(target); // set desired target (determined above)
             robot.motorArm.setPower(1.0); // set motor power
             robot.motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION); // run motor to that position
-        }
-        // display arm position while waiting
-        if (robot.motorArm.isBusy()) {
-            // Send telemetry message to indicate successful Encoder reset to zero
-            telemetry.addData("moving to target", "at %7d :%7d", robot.motorArm.getCurrentPosition());
-            telemetry.update();
+            armHoldPosition = robot.motorArm.getCurrentPosition(); // update hold to current position
         }
 
-        // move arm down
+        // move arm DOWN
         else if(gamepad2.b) {
-            int target = robot.motorArm.getCurrentPosition() + positionDown; //add a neg should be negative
+            int target =  positionDown;
             robot.motorArm.setTargetPosition(target); // set desired target (determined above)
             robot.motorArm.setPower(-0.5); // set motor power
             robot.motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION); // run motor to that position
+            armHoldPosition = robot.motorArm.getCurrentPosition(); // update hold to current position
         }
 
         // display arm position while waiting
