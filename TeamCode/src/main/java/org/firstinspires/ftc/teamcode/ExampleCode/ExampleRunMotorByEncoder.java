@@ -79,7 +79,7 @@ public class ExampleRunMotorByEncoder extends OpMode {
             robot.motorArm.setTargetPosition(target); // set desired target (determined above)
             robot.motorArm.setPower(1.0); // set motor power
             robot.motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION); // run motor to that position
-            armHoldPosition = robot.motorArm.getCurrentPosition(); // update hold to current position
+            armHoldPosition = target; // update hold to current position
         }
 
         // move arm DOWN
@@ -88,7 +88,7 @@ public class ExampleRunMotorByEncoder extends OpMode {
             robot.motorArm.setTargetPosition(target); // set desired target (determined above)
             robot.motorArm.setPower(-0.5); // set motor power
             robot.motorArm.setMode(DcMotor.RunMode.RUN_TO_POSITION); // run motor to that position
-            armHoldPosition = robot.motorArm.getCurrentPosition(); // update hold to current position
+            armHoldPosition = target; // update hold to current position
         }
 
         // display arm position while waiting
